@@ -38,6 +38,14 @@ var stream = new ChunkStoreStream.read(store, chunkLength, { length: 6 })
 stream.pipe(process.stdout)
 ```
 
+opts arguments can be:
+```js
+{
+    start: Number, // chunk index to start reading from
+    length: Number, // the total amount of bytes to read (defaults to store.length)
+}
+```
+
 ### Create a write stream
 
 ```js
@@ -50,6 +58,13 @@ var store = new FSChunkStore(chunkLength)
 
 var stream = new ChunkStoreStream.write(store, chunkLength)
 fs.createReadStream('file.txt').pipe(stream)
+```
+
+opts arguments can be:
+```js
+{
+    start: Number, // chunk index to start writing to
+}
 ```
 
 ## License
