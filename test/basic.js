@@ -59,6 +59,25 @@ function runTests (name, Store) {
     })
   })
 
+  test(name + ': readable stream with start argument', function (t) {
+    var store = new Store(3)
+    store.put(0, Buffer.from('abc'), function (err) {
+      t.error(err)
+      store.put(1, Buffer.from('def'), function (err) {
+        t.error(err)
+
+        var stream = ChunkStoreStream.read(store, 3, { start: 1, length: 3 })
+        stream.on('error', function (err) { t.fail(err) })
+
+        concat(stream, function (err, buf) {
+          t.error(err)
+          t.deepEqual(buf, Buffer.from('def'))
+          t.end()
+        })
+      })
+    })
+  })
+
   test(name + ': writable stream', function (t) {
     var store = new Store(3)
 
@@ -76,6 +95,23 @@ function runTests (name, Store) {
             t.deepEqual(buf, Buffer.from('def'))
             t.end()
           })
+        })
+      })
+  })
+
+  test(name + ': writable stream with start argument', function (t) {
+    var store = new Store(3)
+
+    var stream = ChunkStoreStream.write(store, 3, {start: 1})
+    stream.on('error', function (err) { t.fail(err) })
+
+    str('def')
+      .pipe(stream)
+      .on('finish', function () {
+        store.get(1, function (err, buf) {
+          t.error(err)
+          t.deepEqual(buf, Buffer.from('def'))
+          t.end()
         })
       })
   })
