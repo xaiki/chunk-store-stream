@@ -18,12 +18,12 @@ function ChunkStoreReadStream (store, chunkLength, opts) {
   chunkLength = Number(chunkLength)
   if (!chunkLength) throw new Error('Second argument must be a chunk length')
 
-  this._length = opts.length || store.length
+  this._index = opts.start || 0
+  this._length = this._index * chunkLength + opts.length || store.length
   if (!Number.isFinite(this._length)) throw new Error('missing required `length` property')
 
   this._store = store
   this._chunkLength = chunkLength
-  this._index = 0
 }
 
 ChunkStoreReadStream.prototype._read = function () {

@@ -26,7 +26,7 @@ function ChunkStoreWriteStream (store, chunkLength, opts) {
     .on('data', onData)
     .on('error', function (err) { self.destroy(err) })
 
-  var index = 0
+  var index = opts.start || 0
   function onData (chunk) {
     if (self.destroyed) return
     store.put(index, chunk)
